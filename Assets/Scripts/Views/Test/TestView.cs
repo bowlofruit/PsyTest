@@ -1,53 +1,51 @@
-﻿using TMPro;
+﻿using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class TestView : MonoBehaviour, ITestView
 {
-	[SerializeField] private TMP_Text _questionText; // Текстове поле для відображення питання
-	[SerializeField] private GameObject _optionsContainer; // Контейнер для опцій
-	[SerializeField] private OptionPrefabView _optionPrefab; // Префаб для створення опцій
-	[SerializeField] private Button _submitButton; // Кнопка для підтвердження вибору
+	[SerializeField] private TMP_Text _questionText;
+	[SerializeField] private Button _submitButton;
 
-	private TestPresenter presenter;
+	private TestPresenter _presenter;
+	private OptionsManager _optionsManager;
+	private ToggleGroup _toggleGroup;
+
+	[field: SerializeField] public GameObject OptionsContainer { get; set; }
+	[field: SerializeField] public OptionPrefabView OptionPrefab { get; set; }
+
+	[Inject]
+	public void Construct(OptionsManager optionsManager)
+	{
+		_optionsManager = optionsManager;
+	}
 
 	public void SetPresenter(TestPresenter presenter)
 	{
-		this.presenter = presenter;
-		_submitButton.onClick.AddListener(OnSubmit); // Підключення події кнопки
+		_presenter = presenter;
+		_submitButton.onClick.AddListener(OnSubmit);
 	}
 
 	public void DisplayQuestion(TestQuestion question)
 	{
-		// Очищення попередніх опцій
-		foreach (Transform child in _optionsContainer.transform)
-		{
-			Destroy(child.gameObject);
-		}
-
-		// Відображення тексту питання
 		_questionText.text = question.QuestionText;
-
-		// Додавання опцій
-		foreach (var option in question.Options)
-		{
-			var optionObject = Instantiate(_optionPrefab, _optionsContainer.transform);
-			optionObject.Answer.text = option.Text;
-			optionObject.RadioButton.group = _optionPrefab.GetComponent<ToggleGroup>();
-		}
-
-		// Включення кнопки підпису
+		_toggleGroup = _optionsManager.CreateOptions(question);
 		_submitButton.interactable = true;
 	}
 
 	private void OnSubmit()
 	{
-		// Отримання вибраної опції
-		Toggle selectedToggle = _optionsContainer.GetComponentInChildren<Toggle>(true);
+		var selectedToggle = _toggleGroup.ActiveToggles().FirstOrDefault();
 		if (selectedToggle != null)
 		{
-			presenter.SubmitAnswer(selectedToggle.GetComponentInChildren<Text>().text);
-			_submitButton.interactable = false; // Вимкнення кнопки після подачі
+			_presenter.SubmitAnswer(selectedToggle.GetComponentInChildren<TMP_Text>().text);
+			_submitButton.interactable = false;
+		}
+		else
+		{
+			Debug.LogWarning("No option selected.");
 		}
 	}
 

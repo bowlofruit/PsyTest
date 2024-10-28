@@ -1,37 +1,35 @@
 ﻿using System;
+using System.Text;
 using UnityEngine;
 using Zenject;
 
 public class TestInstaller : MonoInstaller
 {
+	[SerializeField] private TestView _testView;
+
 	public override void InstallBindings()
 	{
-		// Реєстрація View
-		Container.Bind<TestView>().FromComponentInHierarchy().AsSingle();
+		Container.Bind<OptionsManager>()
+		.FromInstance(new OptionsManager(_testView.OptionsContainer.transform, _testView.OptionPrefab))
+		.AsSingle();
 
-		// Реєстрація TestContainer
-		Container.Bind<TestContainer>().FromNew().AsSingle();
+		Container.Bind<TestView>().FromInstance(_testView).AsSingle();
 
-		// Реєстрація Factory
-		Container.Bind<ITestPresenterFactory>().To<TestPresenterFactory>().AsSingle();
-	}
-
-	public override void Start()
-	{
-		// Створення UserTest
 		var userTest = new UserTest
 		{
-			UserId = "user123", // або отримати з реального користувача
-			TestId = "test123", // замінити на фактичний ідентифікатор тесту
+			UserId = "user123",
+			TestId = "test123",
 			Status = TestStatus.NotStarted,
 			CurrentScore = 0,
 			StartTime = DateTime.Now
 		};
 
-		// Отримати Factory з контейнера
-		var presenterFactory = Container.Resolve<ITestPresenterFactory>();
+		var testContainer = TestData.GetSampleTest();
 
-		// Створити Presenter через Factory
-		presenterFactory.Create(userTest);
+		Container.Bind<TestPresenter>().AsTransient()
+			.WithArguments(_testView, testContainer, userTest);
+
+		var presenter = Container.Resolve<TestPresenter>();
+		presenter.StartTest();
 	}
 }

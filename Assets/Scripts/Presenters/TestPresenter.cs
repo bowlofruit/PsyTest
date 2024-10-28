@@ -1,21 +1,26 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class TestPresenter
 {
-	private readonly ITestView view; // Інтерфейс для взаємодії з View
-	private readonly TestContainer testContainer; // Контейнер з тестами
-	private readonly UserTest userTest; // Інформація про проходження тесту
-	private int currentQuestionIndex; // Індекс поточного питання
+	private readonly ITestView view;
+	private readonly TestContainer testContainer;
+	private readonly UserTest userTest;
+	private int currentQuestionIndex;
 
-	public TestPresenter(ITestView view, UserTest userTest)
+	public TestPresenter(ITestView view, TestContainer testContainer, UserTest userTest)
 	{
 		this.view = view;
-		testContainer = TestData.GetSampleTest(); // Завантаження тесту з тестових даних
+		this.testContainer = testContainer;
 		this.userTest = userTest;
 		currentQuestionIndex = 0;
 
 		view.SetPresenter(this);
+	}
 
+	public void StartTest()
+	{
+		Debug.Log("Start Test");
 		LoadNextQuestion();
 	}
 
@@ -23,27 +28,21 @@ public class TestPresenter
 	{
 		if (currentQuestionIndex < testContainer.Questions.Count)
 		{
-			// Завантаження і відображення наступного питання
 			view.DisplayQuestion(testContainer.Questions[currentQuestionIndex]);
 		}
 		else
 		{
-			// Якщо всі питання пройдені, показати результати
 			ShowResults();
 		}
 	}
 
 	public void SubmitAnswer(string selectedOptionText)
 	{
-		// Обробка вибраної відповіді
-		// Знайдемо вибране питання
 		TestQuestion currentQuestion = testContainer.Questions[currentQuestionIndex];
 
-		// Отримаємо вибрану опцію (можна реалізувати логіку для оцінювання)
 		int selectedScore = GetScoreForSelectedOption(currentQuestion, selectedOptionText);
 		userTest.CurrentScore += selectedScore;
 
-		// Переміститися до наступного питання
 		currentQuestionIndex++;
 		LoadNextQuestion();
 	}
@@ -54,18 +53,15 @@ public class TestPresenter
 		{
 			if (option.Text == selectedOptionText)
 			{
-				return option.Score; // Повертаємо бал за вибрану відповідь
+				return option.Score;
 			}
 		}
-		return 0; // Якщо опція не знайдена, повертаємо 0
+		return 0;
 	}
 
 	private void ShowResults()
 	{
-		// Логіка для обчислення результатів
 		TestResult result = CalculateTestResult();
-
-		// Показ результатів через View
 		view.ShowResult(result);
 	}
 
@@ -87,9 +83,9 @@ public class TestPresenter
 		{
 			if (score >= scoring.MinScore && score <= scoring.MaxScore)
 			{
-				return scoring.Label; // Повертаємо етикет для відповідного рахунку
+				return scoring.Label;
 			}
 		}
-		return "Unknown"; // Якщо результат не відомий
+		return "Unknown";
 	}
 }
