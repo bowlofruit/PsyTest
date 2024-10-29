@@ -1,16 +1,22 @@
-﻿public class TestPresenter
+﻿using System.Collections.Generic;
+
+public class TestPresenter
 {
 	private readonly ITestView view;
-	private readonly TestContainer testContainer;
+	private readonly List<Test> testContainer;
 	private readonly UserTest userTest;
 	private int currentQuestionIndex;
+	private TestContainer currentTest;
 
-	public TestPresenter(ITestView view, TestContainer testContainer, UserTest userTest)
+	public List<Test> TestContainer => testContainer;
+
+	public TestPresenter(ITestView view, List<Test> testContainer, UserTest userTest)
 	{
 		this.view = view;
 		this.testContainer = testContainer;
 		this.userTest = userTest;
 		currentQuestionIndex = 0;
+		currentTest = testContainer[0].Container;
 	}
 
 	public void StartTest()
@@ -20,9 +26,9 @@
 
 	private void LoadNextQuestion()
 	{
-		if (currentQuestionIndex < testContainer.Questions.Count)
+		if (currentQuestionIndex < currentTest.Questions.Count)
 		{
-			view.DisplayQuestion(testContainer.Questions[currentQuestionIndex]);
+			view.DisplayQuestion(currentTest.Questions[currentQuestionIndex]);
 		}
 		else
 		{
@@ -32,7 +38,7 @@
 
 	public void SubmitAnswer(string selectedOptionText)
 	{
-		TestQuestion currentQuestion = testContainer.Questions[currentQuestionIndex];
+		TestQuestion currentQuestion = currentTest.Questions[currentQuestionIndex];
 
 		int selectedScore = GetScoreForSelectedOption(currentQuestion, selectedOptionText);
 		userTest.CurrentScore += selectedScore;
@@ -73,7 +79,7 @@
 
 	private string GetResultLabel(int score)
 	{
-		foreach (var scoring in testContainer.Scoring)
+		foreach (var scoring in currentTest.Scoring)
 		{
 			if (score >= scoring.MinScore && score <= scoring.MaxScore)
 			{

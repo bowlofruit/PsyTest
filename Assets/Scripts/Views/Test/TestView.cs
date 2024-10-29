@@ -6,6 +6,11 @@ using System.Linq;
 
 public class TestView : MonoBehaviour, ITestView
 {
+	[Header("Test List")]
+	[SerializeField] private Canvas _testList;
+	[SerializeField] private PsychologicalTestPrefab _testPrefab;
+	[SerializeField] private Transform _content;
+
 	[Header("Test Question")]
 	[SerializeField] private Canvas _testQustions;
 	[SerializeField] private TMP_Text _questionText;
@@ -23,7 +28,6 @@ public class TestView : MonoBehaviour, ITestView
 	[SerializeField] private TMP_Text _testScore;
 	[SerializeField] private TMP_Text _testResultDescription;
 
-	private bool _isResult = false;
 
 	[Inject]
 	public void Construct(TestPresenter presenter, OptionsManager optionsManager)
@@ -31,19 +35,35 @@ public class TestView : MonoBehaviour, ITestView
 		_presenter = presenter;
 		_optionsManager = optionsManager;
 
-		_presenter.StartTest();
 		_submitButton.onClick.AddListener(OnSubmit);
-		SwitchCanvas(_isResult);
+
+		_testList.gameObject.SetActive(true);
+		_testQustions.gameObject.SetActive(false);
+		_testResult.gameObject.SetActive(false);
+
+		ShowTestList();
 	}
 
-	private void SwitchCanvas(bool isResult)
+	private void ShowTestList()
 	{
-		_testQustions.gameObject.SetActive(!isResult);
-		_testResult.gameObject.SetActive(isResult);
-	}
+        foreach (var item in _presenter.TestContainer)
+        {
+			PsychologicalTestPrefab testInList = Instantiate(_testPrefab, _content);
+			testInList.TestLogo = item.Logo;
+			testInList.TestName.text = item.Name;
+			testInList.TestDescription.text = item.Description;
+        }
+    }
 
 	public void DisplayQuestion(TestQuestion question)
 	{
+		if (!_testQustions.gameObject.activeSelf)
+		{
+			_testList.gameObject.SetActive(false);
+			_testQustions.gameObject.SetActive(true);
+			_testResult.gameObject.SetActive(false);
+		}
+
 		_questionText.text = question.QuestionText;
 		_toggleGroup = _optionsManager.CreateOptions(question);
 		_submitButton.interactable = true;
@@ -64,7 +84,9 @@ public class TestView : MonoBehaviour, ITestView
 
 	public void ShowResult(TestResult result)
 	{
-		SwitchCanvas(_isResult = true);
+		_testList.gameObject.SetActive(false);
+		_testQustions.gameObject.SetActive(false);
+		_testResult.gameObject.SetActive(true);
 
 		_testScore.text = result.TotalScore.ToString();
 		_testResultDescription.text = result.ResultLabel;
