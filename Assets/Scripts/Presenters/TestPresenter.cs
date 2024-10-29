@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-public class TestPresenter
+﻿public class TestPresenter
 {
 	private readonly ITestView view;
 	private readonly TestContainer testContainer;
@@ -14,13 +11,10 @@ public class TestPresenter
 		this.testContainer = testContainer;
 		this.userTest = userTest;
 		currentQuestionIndex = 0;
-
-		view.SetPresenter(this);
 	}
 
 	public void StartTest()
 	{
-		Debug.Log("Start Test");
 		LoadNextQuestion();
 	}
 

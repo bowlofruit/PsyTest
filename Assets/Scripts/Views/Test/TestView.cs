@@ -1,11 +1,13 @@
-﻿using System.Linq;
-using TMPro;
-using UnityEngine;
+﻿using TMPro;
 using UnityEngine.UI;
+using UnityEngine;
 using Zenject;
+using System.Linq;
 
 public class TestView : MonoBehaviour, ITestView
 {
+	[Header("Test Question")]
+	[SerializeField] private Canvas _testQustions;
 	[SerializeField] private TMP_Text _questionText;
 	[SerializeField] private Button _submitButton;
 
@@ -16,16 +18,28 @@ public class TestView : MonoBehaviour, ITestView
 	[field: SerializeField] public GameObject OptionsContainer { get; set; }
 	[field: SerializeField] public OptionPrefabView OptionPrefab { get; set; }
 
-	[Inject]
-	public void Construct(OptionsManager optionsManager)
-	{
-		_optionsManager = optionsManager;
-	}
+	[Header("Test Result")]
+	[SerializeField] private Canvas _testResult;
+	[SerializeField] private TMP_Text _testScore;
+	[SerializeField] private TMP_Text _testResultDescription;
 
-	public void SetPresenter(TestPresenter presenter)
+	private bool _isResult = false;
+
+	[Inject]
+	public void Construct(TestPresenter presenter, OptionsManager optionsManager)
 	{
 		_presenter = presenter;
+		_optionsManager = optionsManager;
+
+		_presenter.StartTest();
 		_submitButton.onClick.AddListener(OnSubmit);
+		SwitchCanvas(_isResult);
+	}
+
+	private void SwitchCanvas(bool isResult)
+	{
+		_testQustions.gameObject.SetActive(!isResult);
+		_testResult.gameObject.SetActive(isResult);
 	}
 
 	public void DisplayQuestion(TestQuestion question)
@@ -41,7 +55,6 @@ public class TestView : MonoBehaviour, ITestView
 		if (selectedToggle != null)
 		{
 			_presenter.SubmitAnswer(selectedToggle.GetComponentInChildren<TMP_Text>().text);
-			_submitButton.interactable = false;
 		}
 		else
 		{
@@ -51,6 +64,9 @@ public class TestView : MonoBehaviour, ITestView
 
 	public void ShowResult(TestResult result)
 	{
-		Debug.Log($"Test Completed! Score: {result.TotalScore}, Result: {result.ResultLabel}");
+		SwitchCanvas(_isResult = true);
+
+		_testScore.text = result.TotalScore.ToString();
+		_testResultDescription.text = result.ResultLabel;
 	}
 }
