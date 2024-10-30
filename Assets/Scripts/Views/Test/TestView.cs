@@ -10,6 +10,7 @@ public class TestView : MonoBehaviour, ITestView
 	[SerializeField] private Canvas _testList;
 	[SerializeField] private PsychologicalTestPrefab _testPrefab;
 	[SerializeField] private Transform _content;
+	[field: SerializeField] public Sprite TestSprite { get; set; }
 
 	[Header("Test Question")]
 	[SerializeField] private Canvas _testQustions;
@@ -49,9 +50,7 @@ public class TestView : MonoBehaviour, ITestView
         foreach (var item in _presenter.TestContainer)
         {
 			PsychologicalTestPrefab testInList = Instantiate(_testPrefab, _content);
-			testInList.TestLogo = item.Logo;
-			testInList.TestName.text = item.Name;
-			testInList.TestDescription.text = item.Description;
+			testInList.Init(item.Name, item.Description, item.Logo, item.Container, _presenter);
         }
     }
 

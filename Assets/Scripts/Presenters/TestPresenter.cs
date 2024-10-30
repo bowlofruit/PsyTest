@@ -2,33 +2,33 @@
 
 public class TestPresenter
 {
-	private readonly ITestView view;
-	private readonly List<Test> testContainer;
-	private readonly UserTest userTest;
-	private int currentQuestionIndex;
-	private TestContainer currentTest;
+	private readonly ITestView _view;
+	private readonly List<Test> _testContainer;
+	private readonly UserTest _userTest;
+	private int _currentQuestionIndex;
+	private TestContainer _currentTest;
 
-	public List<Test> TestContainer => testContainer;
+	public List<Test> TestContainer => _testContainer;
 
 	public TestPresenter(ITestView view, List<Test> testContainer, UserTest userTest)
 	{
-		this.view = view;
-		this.testContainer = testContainer;
-		this.userTest = userTest;
-		currentQuestionIndex = 0;
-		currentTest = testContainer[0].Container;
+		_view = view;
+		_testContainer = testContainer;
+		_userTest = userTest;
+		_currentQuestionIndex = 0;
 	}
 
-	public void StartTest()
+	public void StartTest(TestContainer container)
 	{
+		_currentTest = container;
 		LoadNextQuestion();
 	}
 
 	private void LoadNextQuestion()
 	{
-		if (currentQuestionIndex < currentTest.Questions.Count)
+		if (_currentQuestionIndex < _currentTest.Questions.Count)
 		{
-			view.DisplayQuestion(currentTest.Questions[currentQuestionIndex]);
+			_view.DisplayQuestion(_currentTest.Questions[_currentQuestionIndex]);
 		}
 		else
 		{
@@ -38,12 +38,12 @@ public class TestPresenter
 
 	public void SubmitAnswer(string selectedOptionText)
 	{
-		TestQuestion currentQuestion = currentTest.Questions[currentQuestionIndex];
+		TestQuestion currentQuestion = _currentTest.Questions[_currentQuestionIndex];
 
 		int selectedScore = GetScoreForSelectedOption(currentQuestion, selectedOptionText);
-		userTest.CurrentScore += selectedScore;
+		_userTest.CurrentScore += selectedScore;
 
-		currentQuestionIndex++;
+		_currentQuestionIndex++;
 		LoadNextQuestion();
 	}
 
@@ -62,16 +62,16 @@ public class TestPresenter
 	private void ShowResults()
 	{
 		TestResult result = CalculateTestResult();
-		view.ShowResult(result);
+		_view.ShowResult(result);
 	}
 
 	private TestResult CalculateTestResult()
 	{
 		TestResult result = new TestResult
 		{
-			TestId = userTest.TestId,
-			TotalScore = userTest.CurrentScore,
-			ResultLabel = GetResultLabel(userTest.CurrentScore)
+			TestId = _userTest.TestId,
+			TotalScore = _userTest.CurrentScore,
+			ResultLabel = GetResultLabel(_userTest.CurrentScore)
 		};
 
 		return result;
@@ -79,7 +79,7 @@ public class TestPresenter
 
 	private string GetResultLabel(int score)
 	{
-		foreach (var scoring in currentTest.Scoring)
+		foreach (var scoring in _currentTest.Scoring)
 		{
 			if (score >= scoring.MinScore && score <= scoring.MaxScore)
 			{

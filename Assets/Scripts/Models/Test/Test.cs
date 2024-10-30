@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityEngine.UI;
+using UnityEngine;
 
 [Serializable]
 public class Test
@@ -11,7 +11,7 @@ public class Test
 	public string Status;
 	public DateTime CreatedAt;
 	public DateTime UpdatedAt;
-	public Image Logo;
+	public Sprite Logo;
 	public string Description;
 	public TestContainer Container;
 }

@@ -35,7 +35,7 @@ public class TestInstaller : MonoInstaller
 				Status = "Active",
 				CreatedAt = DateTime.Now.AddDays(-10),
 				UpdatedAt = DateTime.Now,
-				Logo = null, // Якщо немає зображення, можна залишити null або заповнити Image
+				Logo = _testView.TestSprite,
 				Description = "Тест для оцінки рівня депресії за методикою Бека.",
 				Container = TestData.GetSampleTest()
 			},
@@ -48,7 +48,7 @@ public class TestInstaller : MonoInstaller
 				Status = "Active",
 				CreatedAt = DateTime.Now.AddDays(-20),
 				UpdatedAt = DateTime.Now,
-				Logo = null, // Можна додати зображення, якщо потрібно
+				Logo = _testView.TestSprite,
 				Description = "Тест для оцінки рівня тривожності.",
 				Container = TestData.GetAnxietyTest()
 			},
@@ -61,7 +61,7 @@ public class TestInstaller : MonoInstaller
 				Status = "Active",
 				CreatedAt = DateTime.Now.AddDays(-15),
 				UpdatedAt = DateTime.Now,
-				Logo = null, // Можна встановити зображення
+				Logo = _testView.TestSprite,
 				Description = "Тест для визначення рівня самооцінки.",
 				Container = TestData.GetSelfEsteemTest()
 			}

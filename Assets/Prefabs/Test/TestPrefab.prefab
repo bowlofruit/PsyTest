@@ -51,9 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c890ad8b6a6e5b418528cfedd8b4d74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TestName: {fileID: 3133377226221592557}
-  TestDescription: {fileID: 5062016868111886050}
-  TestLogo: {fileID: 2121874168350314794}
+  <Name>k__BackingField: {fileID: 3133377226221592557}
+  <Description>k__BackingField: {fileID: 5062016868111886050}
+  <Logo>k__BackingField: {fileID: 2121874168350314794}
 --- !u!1 &3655683812990566315
 GameObject:
   m_ObjectHideFlags: 0
