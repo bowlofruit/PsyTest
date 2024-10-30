@@ -1,11 +1,11 @@
 ﻿using TMPro;
-using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PsychologicalTestPrefab : MonoBehaviour, IPointerClickHandler
 {
-	[field: SerializeField] public TMP_Text Name { get; private set;}
+	[field: SerializeField] public TMP_Text Name { get; private set; }
 	[field: SerializeField] public TMP_Text Description { get; private set; }
 	[field: SerializeField] public Image Logo { get; private set; }
 

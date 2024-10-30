@@ -21,9 +21,9 @@ public class OptionsManager
 			toggleGroup = _optionsContainer.gameObject.AddComponent<ToggleGroup>();
 		}
 
-		foreach (var option in question.Options)
+		foreach (TestOption option in question.Options)
 		{
-			var optionObject = Object.Instantiate(_optionPrefab, _optionsContainer.position, Quaternion.identity, _optionsContainer);
+			OptionPrefabView optionObject = Object.Instantiate(_optionPrefab, _optionsContainer.position, Quaternion.identity, _optionsContainer);
 			optionObject.Answer.text = option.Text;
 			optionObject.RadioButton.group = toggleGroup;
 		}

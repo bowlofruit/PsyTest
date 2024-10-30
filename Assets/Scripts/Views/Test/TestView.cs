@@ -1,8 +1,8 @@
-﻿using TMPro;
-using UnityEngine.UI;
+﻿using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
-using System.Linq;
 
 public class TestView : MonoBehaviour, ITestView
 {
@@ -29,7 +29,6 @@ public class TestView : MonoBehaviour, ITestView
 	[SerializeField] private TMP_Text _testScore;
 	[SerializeField] private TMP_Text _testResultDescription;
 
-
 	[Inject]
 	public void Construct(TestPresenter presenter, OptionsManager optionsManager)
 	{
@@ -47,12 +46,12 @@ public class TestView : MonoBehaviour, ITestView
 
 	private void ShowTestList()
 	{
-        foreach (var item in _presenter.TestContainer)
-        {
+		foreach (Test item in _presenter.TestContainer)
+		{
 			PsychologicalTestPrefab testInList = Instantiate(_testPrefab, _content);
 			testInList.Init(item.Name, item.Description, item.Logo, item.Container, _presenter);
-        }
-    }
+		}
+	}
 
 	public void DisplayQuestion(TestQuestion question)
 	{
@@ -70,7 +69,7 @@ public class TestView : MonoBehaviour, ITestView
 
 	private void OnSubmit()
 	{
-		var selectedToggle = _toggleGroup.ActiveToggles().FirstOrDefault();
+		Toggle selectedToggle = _toggleGroup.ActiveToggles().FirstOrDefault();
 		if (selectedToggle != null)
 		{
 			_presenter.SubmitAnswer(selectedToggle.GetComponentInChildren<TMP_Text>().text);

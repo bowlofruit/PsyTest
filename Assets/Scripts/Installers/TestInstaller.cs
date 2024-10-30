@@ -9,13 +9,13 @@ public class TestInstaller : MonoInstaller
 
 	public override void InstallBindings()
 	{
-		Container.Bind<OptionsManager>()
+		_ = Container.Bind<OptionsManager>()
 			.FromInstance(new OptionsManager(_testView.OptionsContainer.transform, _testView.OptionPrefab))
 			.AsSingle();
 
-		Container.Bind<TestView>().FromInstance(_testView).AsSingle();
+		_ = Container.Bind<TestView>().FromInstance(_testView).AsSingle();
 
-		var userTest = new UserTest
+		UserTest userTest = new()
 		{
 			UserId = "user123",
 			TestId = "test123",
@@ -24,10 +24,9 @@ public class TestInstaller : MonoInstaller
 			StartTime = DateTime.Now
 		};
 
-		var testList = new List<Test>
+		List<Test> testList = new()
 		{
-			new Test
-			{
+			new() {
 				Id = "1",
 				Name = "Тест на депресію Бека",
 				Category = "Психологічні",
@@ -39,8 +38,7 @@ public class TestInstaller : MonoInstaller
 				Description = "Тест для оцінки рівня депресії за методикою Бека.",
 				Container = TestData.GetSampleTest()
 			},
-			new Test
-			{
+			new() {
 				Id = "2",
 				Name = "Тест на тривожність",
 				Category = "Психологічні",
@@ -52,8 +50,7 @@ public class TestInstaller : MonoInstaller
 				Description = "Тест для оцінки рівня тривожності.",
 				Container = TestData.GetAnxietyTest()
 			},
-			new Test
-			{
+			new() {
 				Id = "3",
 				Name = "Тест на самооцінку",
 				Category = "Психологічні",
@@ -67,6 +64,6 @@ public class TestInstaller : MonoInstaller
 			}
 		};
 
-		Container.Bind<TestPresenter>().AsTransient().WithArguments(_testView, testList, userTest);
+		_ = Container.Bind<TestPresenter>().AsTransient().WithArguments(_testView, testList, userTest);
 	}
 }

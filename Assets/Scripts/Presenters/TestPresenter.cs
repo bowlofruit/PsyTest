@@ -3,17 +3,16 @@
 public class TestPresenter
 {
 	private readonly ITestView _view;
-	private readonly List<Test> _testContainer;
 	private readonly UserTest _userTest;
 	private int _currentQuestionIndex;
 	private TestContainer _currentTest;
 
-	public List<Test> TestContainer => _testContainer;
+	public List<Test> TestContainer { get; }
 
 	public TestPresenter(ITestView view, List<Test> testContainer, UserTest userTest)
 	{
 		_view = view;
-		_testContainer = testContainer;
+		TestContainer = testContainer;
 		_userTest = userTest;
 		_currentQuestionIndex = 0;
 	}
@@ -49,7 +48,7 @@ public class TestPresenter
 
 	private int GetScoreForSelectedOption(TestQuestion question, string selectedOptionText)
 	{
-		foreach (var option in question.Options)
+		foreach (TestOption option in question.Options)
 		{
 			if (option.Text == selectedOptionText)
 			{
@@ -67,7 +66,7 @@ public class TestPresenter
 
 	private TestResult CalculateTestResult()
 	{
-		TestResult result = new TestResult
+		TestResult result = new()
 		{
 			TestId = _userTest.TestId,
 			TotalScore = _userTest.CurrentScore,
@@ -79,7 +78,7 @@ public class TestPresenter
 
 	private string GetResultLabel(int score)
 	{
-		foreach (var scoring in _currentTest.Scoring)
+		foreach (TestScoring scoring in _currentTest.Scoring)
 		{
 			if (score >= scoring.MinScore && score <= scoring.MaxScore)
 			{
