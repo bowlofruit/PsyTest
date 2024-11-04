@@ -9,11 +9,11 @@ public class TestInstaller : MonoInstaller
 
 	public override void InstallBindings()
 	{
-		_ = Container.Bind<OptionsManager>()
+		Container.Bind<OptionsManager>()
 			.FromInstance(new OptionsManager(_testView.OptionsContainer.transform, _testView.OptionPrefab))
 			.AsSingle();
 
-		_ = Container.Bind<TestView>().FromInstance(_testView).AsSingle();
+		Container.Bind<TestView>().FromInstance(_testView).AsSingle();
 
 		UserTest userTest = new()
 		{
@@ -64,6 +64,6 @@ public class TestInstaller : MonoInstaller
 			}
 		};
 
-		_ = Container.Bind<TestPresenter>().AsTransient().WithArguments(_testView, testList, userTest);
+		Container.Bind<TestPresenter>().AsTransient().WithArguments(_testView, testList, userTest);
 	}
 }
