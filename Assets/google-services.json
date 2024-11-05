@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "571923873032",
+    "firebase_url": "https://psytest-13ff1-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "psytest-13ff1",
-    "storage_bucket": "psytest-13ff1.appspot.com"
+    "storage_bucket": "psytest-13ff1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:571923873032:android:b25879980419a1117280bd",
+        "mobilesdk_app_id": "1:571923873032:android:bbdf4905096127b17280bd",
         "android_client_info": {
           "package_name": "com.BowlofFruit.PsyTest"
         }

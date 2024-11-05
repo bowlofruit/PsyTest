@@ -38,7 +38,6 @@ public class FirebaseAuthService
 			var userCredential = await _auth.CreateUserWithEmailAndPasswordAsync(email, password);
 			_user = userCredential.User;
 
-			// Add user data to Firebase Database
 			await _databaseRef.Child("users").Child(_user.UserId)
 				.SetRawJsonValueAsync(JsonUtility.ToJson(new FirebaseUserData
 				{
@@ -47,7 +46,6 @@ public class FirebaseAuthService
 					Role = "user"
 				}));
 
-			// Send verification email
 			await _user.SendEmailVerificationAsync();
 
 			return _user;

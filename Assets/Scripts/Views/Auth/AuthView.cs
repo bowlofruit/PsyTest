@@ -10,6 +10,7 @@ public class AuthView : MonoBehaviour, IAuthView
 	[SerializeField] private TMP_InputField _usernameField;
 	[SerializeField] private Button _registerButton;
 	[SerializeField] private Button _loginButton;
+	[SerializeField] private TMP_Text _messageLabel; 
 
 	private AuthPresenter _presenter;
 
@@ -17,10 +18,7 @@ public class AuthView : MonoBehaviour, IAuthView
 	public void Construct(AuthPresenter presenter)
 	{
 		_presenter = presenter;
-	}
 
-	private void Start()
-	{
 		_registerButton.onClick.AddListener(() =>
 			_presenter.OnRegister(_emailField.text, _passwordField.text, _usernameField.text));
 		_loginButton.onClick.AddListener(() =>
@@ -29,11 +27,13 @@ public class AuthView : MonoBehaviour, IAuthView
 
 	public void ShowSuccess(string message)
 	{
-		Debug.Log("Success: " + message);
+		_messageLabel.text = "Success: " + message;
+		_messageLabel.color = Color.green;
 	}
 
 	public void ShowError(string message)
 	{
-		Debug.LogError("Error: " + message);
+		_messageLabel.text = "Error: " + message;
+		_messageLabel.color = Color.red;
 	}
 }
