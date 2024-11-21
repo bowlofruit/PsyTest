@@ -8,7 +8,7 @@ public class Test
 	public string Name;
 	public string Category;
 	public string JsonUrl;
-	public string Status;
+	public string Status; //TODO Save data
 	public DateTime CreatedAt;
 	public DateTime UpdatedAt;
 	public Sprite Logo;
