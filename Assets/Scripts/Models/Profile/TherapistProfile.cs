@@ -2,7 +2,7 @@
 
 namespace PsyTest.Profile
 {
-	public class TherapistProfile : UserProfile
+	public class TherapistProfile : UserProfileInfo
 	{
 		public string LastName { get; set; }
 		public string ContactInfo { get; set; }

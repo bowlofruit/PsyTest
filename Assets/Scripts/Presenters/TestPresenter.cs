@@ -2,14 +2,14 @@
 
 public class TestPresenter
 {
-	private readonly ITestView _view;
+	private readonly TestListView _view;
 	private readonly UserTest _userTest;
 	private int _currentQuestionIndex;
 	private TestContainer _currentTest;
 
 	public List<Test> TestContainer { get; }
 
-	public TestPresenter(ITestView view, List<Test> testContainer, UserTest userTest)
+	public TestPresenter(TestListView view, List<Test> testContainer, UserTest userTest)
 	{
 		_view = view;
 		TestContainer = testContainer;

@@ -1,10 +1,11 @@
+using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using Firebase;
-using System.Threading.Tasks;
-using System;
-using UnityEngine;
 using Firebase.Extensions;
+using PsyTest.Profile;
+using System;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class FirebaseAuthService
 {
@@ -14,19 +15,13 @@ public class FirebaseAuthService
 
 	public FirebaseAuthService()
 	{
-		FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
+		FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+		{
 			if (task.Result == DependencyStatus.Available)
 			{
 				FirebaseApp app = FirebaseApp.DefaultInstance;
-
 				_auth = FirebaseAuth.DefaultInstance;
 				_databaseRef = FirebaseDatabase.DefaultInstance.RootReference;
-
-				Debug.Log("Firebase initialized successfully");
-			}
-			else
-			{
-				Debug.LogError("Could not resolve all Firebase dependencies: " + task.Result);
 			}
 		});
 	}
@@ -61,6 +56,27 @@ public class FirebaseAuthService
 	{
 		await _auth.SignInWithEmailAndPasswordAsync(email, password);
 		_user = _auth.CurrentUser;
+	}
+
+	public Task<UserProfileInfo> GetUserProfile()
+	{
+		FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
+
+		if (user != null)
+		{
+			UserProfileInfo userProfile = new UserProfileInfo
+			{
+				UserId = user.UserId,
+				Name = user.DisplayName,
+				Login = user.Email,
+				Email = user.Email,
+				Role = "client"
+			};
+
+			return Task.FromResult(userProfile);
+		}
+
+		return Task.FromResult<UserProfileInfo>(null);
 	}
 
 	public bool IsEmailVerified() => _auth.CurrentUser?.IsEmailVerified ?? false;

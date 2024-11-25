@@ -10,7 +10,7 @@ public class AuthView : MonoBehaviour, IAuthView
 	[SerializeField] private TMP_InputField _usernameField;
 	[SerializeField] private Button _registerButton;
 	[SerializeField] private Button _loginButton;
-	[SerializeField] private TMP_Text _messageLabel; 
+	[SerializeField] private TMP_Text _messageLabel;
 
 	private AuthPresenter _presenter;
 
@@ -35,5 +35,10 @@ public class AuthView : MonoBehaviour, IAuthView
 	{
 		_messageLabel.text = "Error: " + message;
 		_messageLabel.color = Color.red;
+	}
+
+	public GameObject GetGameObject()
+	{
+		return gameObject;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class TestView : MonoBehaviour, ITestView
+public class TestListView : MonoBehaviour, ITestView
 {
 	[Header("Test List")]
 	[SerializeField] private Canvas _testList;

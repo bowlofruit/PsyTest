@@ -2,26 +2,15 @@ using System;
 
 public class AuthPresenter
 {
-	private readonly IAuthView _authView;
 	private readonly FirebaseAuthService _authService;
+	private readonly AuthView _authView;
+	private readonly EventManager _eventManager;
 
-	public AuthPresenter(IAuthView authView, FirebaseAuthService authService)
+	public AuthPresenter(FirebaseAuthService authService, AuthView authView, EventManager eventManager)
 	{
-		_authView = authView;
 		_authService = authService;
-	}
-
-	public async void OnRegister(string email, string password, string username)
-	{
-		try
-		{
-			var user = await _authService.RegisterUser(email, password, username);
-			_authView.ShowSuccess("Registration successful. Please verify your email.");
-		}
-		catch (Exception ex)
-		{
-			_authView.ShowError("Registration failed: " + ex.Message);
-		}
+		_authView = authView;
+		_eventManager = eventManager;
 	}
 
 	public async void OnLogin(string email, string password)
@@ -29,11 +18,34 @@ public class AuthPresenter
 		try
 		{
 			await _authService.LoginUser(email, password);
-			_authView.ShowSuccess("Login successful.");
+
+			if (_authService.IsEmailVerified())
+			{
+				_authView.ShowSuccess("Login successful");
+				_eventManager.Notify(AppState.MainMenu);
+			}
+			else
+			{
+				_authView.ShowError("Email not verified. Please check your inbox.");
+			}
 		}
 		catch (Exception ex)
 		{
-			_authView.ShowError("Login failed: " + ex.Message);
+			_authView.ShowError($"Login failed: {ex.Message}");
+			UnityEngine.Debug.Log(ex);
+		}
+	}
+
+	public async void OnRegister(string email, string password, string username)
+	{
+		try
+		{
+			await _authService.RegisterUser(email, password, username);
+			_authView.ShowSuccess("Registration successful. Check your email for verification.");
+		}
+		catch (Exception ex)
+		{
+			_authView.ShowError($"Registration failed: {ex.Message}");
 		}
 	}
 }
