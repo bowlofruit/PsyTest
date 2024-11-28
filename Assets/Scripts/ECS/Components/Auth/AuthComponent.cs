@@ -1,5 +1,8 @@
-﻿namespace ECS.Components.Auth
+﻿using System;
+
+namespace ECS.Components.Auth
 {
+	[Serializable]
 	public struct AuthComponent
 	{
 		public string Email;

@@ -21,12 +21,6 @@ namespace ECS.Installers
 
 		private ISystem<float> CreateLateUpdateSystem => new SequentialSystem<float>();
 
-		[Inject]
-		private void Construct(World world)
-		{
-			_world = world;
-		}
-
 		public override void InstallBindings()
 		{
 			Container.BindInterfacesAndSelfTo<SystemFixedUpdater>().FromInstance(new SystemFixedUpdater(CreateFixedUpdateSystem)).AsSingle();
