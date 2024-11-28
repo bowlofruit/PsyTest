@@ -13,7 +13,6 @@ public class ProfileTestInitializer : IInitializable
 
 	public void Initialize()
 	{
-		// Створюємо тестові профілі
 		ClientProfile client = new()
 		{
 			Name = "Olga",
@@ -33,10 +32,7 @@ public class ProfileTestInitializer : IInitializable
 			Certificates = new List<string> { "CBT Certification", "EMDR Training" }
 		};
 
-		// Відображення профілю клієнта
 		_profilePresenter.ShowClientProfile(client);
 
-		// Альтернативно: Відображення профілю терапевта
-		// _profilePresenter.ShowTherapistProfile(therapist);
 	}
 }
