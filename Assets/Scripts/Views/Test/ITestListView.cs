@@ -1,4 +1,4 @@
-﻿public interface ITestView
+﻿public interface ITestListView
 {
 	void DisplayQuestion(TestQuestion question);
 

@@ -1,12 +1,18 @@
-namespace PsyTest.Profile
+using Models.Profile;
+using TMPro;
+using View.Profile;
+
+namespace Presenter.Profile
 {
 	public class ProfilePresenter
 	{
-		private readonly ProfileView _view;
+		private readonly IProfileView<IUserProfile> _view;
+		private readonly IUserProfile _currentUser;
 
-		public ProfilePresenter(ProfileView view)
+		public ProfilePresenter(IProfileView<IUserProfile> view, IUserProfile currentUser)
 		{
 			_view = view;
+			_currentUser = currentUser;
 		}
 
 		public void ShowClientProfile(ClientProfile client)
@@ -14,13 +20,7 @@ namespace PsyTest.Profile
 			string testResults = string.Join("\n", client.TestResults.ConvertAll(
 				result => $"{result.TestId}: {result.ResultLabel} (Score: {result.TotalScore})"));
 
-			_view.DisplayClientProfile(client.Name, client.Login, testResults);
-		}
-
-		public void ShowTherapistProfile(TherapistProfile therapist)
-		{
-			string certificates = string.Join("\n", therapist.Certificates);
-			_view.DisplayTherapistProfile(therapist.Name, therapist.ContactInfo, certificates, therapist.ExperienceYears);
+			_view.DisplayProfile(_currentUser);
 		}
 	}
 }

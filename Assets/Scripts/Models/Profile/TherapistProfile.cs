@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace PsyTest.Profile
+namespace Models.Profile
 {
-	public class TherapistProfile : UserProfileInfo
+	[Serializable]
+	public class TherapistProfile : IUserProfile
 	{
+		public string UserId { get; set; }
+		public string Name { get; set; }
+		public string Login { get; set; }
+		public string Email { get; set; }
+		public string Role { get; set; }
 		public string LastName { get; set; }
 		public string ContactInfo { get; set; }
 		public int ExperienceYears { get; set; }
-		public List<string> Certificates { get; set; } = new();
+		public List<string> Certificates { get; set; }
 	}
 }

@@ -1,6 +1,6 @@
-﻿using PsyTest.Profile;
-using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using View.Profile;
+using Models.Profile;
 
 public class AppStateMachine
 {
@@ -9,12 +9,13 @@ public class AppStateMachine
 	private readonly AuthView _authView;
 	private readonly MainMenuView _mainMenuView;
 	private readonly TestListView _testListView;
-	private readonly ProfileView _profileView;
+	private readonly IProfileView<IUserProfile> _profileView;
 	private readonly FirebaseAuthService _authService;
+	private readonly IUserProfile _currentUserProfile;
 
 	public AppState CurrentState => _currentState;
 	
-	public AppStateMachine(AuthView authView, MainMenuView mainMenuView, TestListView testListView, ProfileView profileView, FirebaseAuthService authService, EventManager eventManager)
+	public AppStateMachine(AuthView authView, MainMenuView mainMenuView, TestListView testListView, IProfileView<IUserProfile> profileView, FirebaseAuthService authService, EventManager eventManager)
 	{
 		_authView = authView;
 		_mainMenuView = mainMenuView;
@@ -56,7 +57,7 @@ public class AppStateMachine
 		_authView.gameObject.SetActive(true);
 		_mainMenuView.gameObject.SetActive(false);
 		_testListView.gameObject.SetActive(false);
-		_profileView.gameObject.SetActive(false);
+		_profileView.GetGameObject().SetActive(false);
 	}
 
 	private void ShowMainMenu()
@@ -64,7 +65,7 @@ public class AppStateMachine
 		_authView.gameObject.SetActive(false);
 		_mainMenuView.gameObject.SetActive(true);
 		_testListView.gameObject.SetActive(false);
-		_profileView.gameObject.SetActive(false);
+		_profileView.GetGameObject().SetActive(false);
 	}
 
 	private void ShowTestList()
@@ -72,23 +73,16 @@ public class AppStateMachine
 		_authView.gameObject.SetActive(false);
 		_mainMenuView.gameObject.SetActive(false);
 		_testListView.gameObject.SetActive(true);
-		_profileView.gameObject.SetActive(false);
+		_profileView.GetGameObject().SetActive(false);
 	}
 
 	private async void ShowProfile()
 	{
 		var userProfile = await _authService.GetUserProfile();
 
-		if (userProfile != null)
-		{
-			_profileView.DisplayClientProfile(userProfile.Name, userProfile.Email, "Tests");
-		}
-		else
-		{
-			Debug.LogError("Failed to load user profile");
-		}
+		_profileView.DisplayProfile(_currentUserProfile);
 
-		_profileView.gameObject.SetActive(true);
+		_profileView.GetGameObject().SetActive(true);
 		_authView.gameObject.SetActive(false);
 		_mainMenuView.gameObject.SetActive(false);
 		_testListView.gameObject.SetActive(false);

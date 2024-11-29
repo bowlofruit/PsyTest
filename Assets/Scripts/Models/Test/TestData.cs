@@ -12,7 +12,6 @@ public static class TestData
 			new() { Text = "Сильно", Score = 3 }
 		};
 
-		// Питання тесту депресії Бека
 		List<TestQuestion> questions = new()
 		{
 			new() { QuestionText = "Ви відчуваєте сум?", Options = options },
@@ -27,7 +26,6 @@ public static class TestData
 			new() { QuestionText = "Ви більше плачете?", Options = options }
 		};
 
-		// Шкала оцінювання
 		List<TestScoring> scoring = new()
 		{
 			new() { MinScore = 0, MaxScore = 9, Label = "Мінімальний рівень депресії" },
@@ -36,7 +34,6 @@ public static class TestData
 			new() { MinScore = 30, MaxScore = 63, Label = "Тяжка депресія" }
 		};
 
-		// Повертаємо контейнер тесту
 		return new TestContainer
 		{
 			Questions = questions,
@@ -46,7 +43,6 @@ public static class TestData
 
 	public static TestContainer GetSelfEsteemTest()
 	{
-		// Створюємо кілька опцій для питань
 		List<TestOption> options = new()
 		{
 			new() { Text = "Зовсім не погоджуюсь", Score = 0 },
@@ -55,7 +51,6 @@ public static class TestData
 			new() { Text = "Повністю погоджуюсь", Score = 3 }
 		};
 
-		// Питання тесту на самооцінку
 		List<TestQuestion> questions = new()
 		{
 			new() { QuestionText = "Я задоволений собою", Options = options },
@@ -66,7 +61,6 @@ public static class TestData
 			new() { QuestionText = "Мені легко прийняти себе таким, яким я є", Options = options }
 		};
 
-		// Шкала оцінювання для тесту на самооцінку
 		List<TestScoring> scoring = new()
 		{
 			new() { MinScore = 0, MaxScore = 5, Label = "Низька самооцінка" },
@@ -75,7 +69,6 @@ public static class TestData
 			new() { MinScore = 16, MaxScore = 18, Label = "Дуже висока самооцінка" }
 		};
 
-		// Повертаємо контейнер тесту
 		return new TestContainer
 		{
 			Questions = questions,
@@ -85,7 +78,6 @@ public static class TestData
 
 	public static TestContainer GetAnxietyTest()
 	{
-		// Створюємо кілька опцій для питань
 		List<TestOption> options = new()
 		{
 			new() { Text = "Ніколи", Score = 0 },
@@ -94,7 +86,6 @@ public static class TestData
 			new() { Text = "Завжди", Score = 3 }
 		};
 
-		// Питання тесту на тривожність
 		List<TestQuestion> questions = new()
 		{
 			new() { QuestionText = "Ви відчуваєте занепокоєння?", Options = options },
@@ -105,7 +96,6 @@ public static class TestData
 			new() { QuestionText = "Ви уникаєте соціальних ситуацій?", Options = options }
 		};
 
-		// Шкала оцінювання для тесту на тривожність
 		List<TestScoring> scoring = new()
 		{
 			new() { MinScore = 0, MaxScore = 5, Label = "Мінімальний рівень тривожності" },
@@ -114,7 +104,6 @@ public static class TestData
 			new() { MinScore = 16, MaxScore = 18, Label = "Тяжка тривожність" }
 		};
 
-		// Повертаємо контейнер тесту
 		return new TestContainer
 		{
 			Questions = questions,

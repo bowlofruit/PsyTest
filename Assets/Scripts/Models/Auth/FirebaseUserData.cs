@@ -1,6 +1,12 @@
-﻿public class FirebaseUserData
+﻿using System;
+
+namespace Models.Authentication
 {
-	public string Username;
-	public string Email;
-	public string Role;
+	[Serializable]
+	public struct FirebaseUserData
+	{
+		public string Username;
+		public string Email;
+		public string Role;
+	}
 }

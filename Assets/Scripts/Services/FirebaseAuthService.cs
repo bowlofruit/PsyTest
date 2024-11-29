@@ -2,7 +2,8 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
-using PsyTest.Profile;
+using Models.Authentication;
+using Models.Profile;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -58,13 +59,13 @@ public class FirebaseAuthService
 		_user = _auth.CurrentUser;
 	}
 
-	public Task<UserProfileInfo> GetUserProfile()
+	public Task<IUserProfile> GetUserProfile()
 	{
 		FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
 
 		if (user != null)
 		{
-			UserProfileInfo userProfile = new UserProfileInfo
+			IUserProfile userProfile = new ClientProfile
 			{
 				UserId = user.UserId,
 				Name = user.DisplayName,
@@ -76,7 +77,7 @@ public class FirebaseAuthService
 			return Task.FromResult(userProfile);
 		}
 
-		return Task.FromResult<UserProfileInfo>(null);
+		return Task.FromResult<IUserProfile>(null);
 	}
 
 	public bool IsEmailVerified() => _auth.CurrentUser?.IsEmailVerified ?? false;

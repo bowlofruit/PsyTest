@@ -1,15 +1,18 @@
-﻿using PsyTest.Profile;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Zenject;
+using View.Profile;
+using Presenter.Profile;
+using Models.Profile;
 
 public class AppStateMachineInstaller : MonoInstaller
 {
 	[SerializeField] private AuthView _authView;
 	[SerializeField] private MainMenuView _mainMenuView;
 	[SerializeField] private TestListView _testListView;
-	[SerializeField] private ProfileView _profileView;
+	[SerializeField] private ClientProfileView _clientProfileView;
+	[SerializeField] private TherapistProfileView _therapistProfileView;
 
 	public override void InstallBindings()
 	{
@@ -30,10 +33,14 @@ public class AppStateMachineInstaller : MonoInstaller
 
 	private void BindViews()
 	{
-		Container.Bind<AuthView>().FromInstance(_authView).AsSingle();
+		Container.Bind<IAuthView>().To<AuthView>().FromInstance(_authView).AsSingle();
 		Container.Bind<MainMenuView>().FromInstance(_mainMenuView).AsSingle();
-		Container.Bind<TestListView>().FromInstance(_testListView).AsSingle();
-		Container.Bind<ProfileView>().FromInstance(_profileView).AsSingle();
+		Container.Bind<ITestListView>().To<TestListView>().FromInstance(_testListView).AsSingle();
+
+		Container.Bind<IProfileView<ClientProfile>>().WithId("Client").To<ClientProfileView>().AsTransient();
+		Container.Bind<IProfileView<TherapistProfile>>().WithId("Therapist").To<TherapistProfileView>().AsTransient();
+
+		Container.Bind<ProfileViewFactory>().AsSingle();
 	}
 
 	private void BindStateMachine()

@@ -1,4 +1,5 @@
-﻿using PsyTest.Profile;
+﻿using Models.Profile;
+using Presenter.Profile;
 using System.Collections.Generic;
 using Zenject;
 
