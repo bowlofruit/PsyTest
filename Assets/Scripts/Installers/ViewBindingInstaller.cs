@@ -1,7 +1,7 @@
-﻿using View.Profile;
-using Models.Profile;
-using View.MainMenu;
+﻿using Models.Profile;
 using UnityEngine;
+using View.MainMenu;
+using View.Profile;
 using Zenject;
 
 namespace Installers
@@ -19,6 +19,7 @@ namespace Installers
 			Container.Bind<IAuthView>().To<AuthView>().FromInstance(_authView).AsSingle();
 			Container.Bind<IMainMenuView>().To<MainMenuView>().FromInstance(_mainMenuView).AsSingle();
 			Container.Bind<ITestListView>().To<TestListView>().FromInstance(_testListView).AsSingle();
+
 			Container.Bind<IProfileView<ClientProfile>>().WithId("Client").To<ClientProfileView>().FromInstance(_clientProfileView).AsTransient();
 			Container.Bind<IProfileView<TherapistProfile>>().WithId("Therapist").To<TherapistProfileView>().FromInstance(_therapistProfileView).AsTransient();
 

@@ -1,1 +1,2 @@
-﻿public interface IMainMenuView : IStateHandler { }
+﻿public interface IMainMenuView : IStateHandler
+{ }

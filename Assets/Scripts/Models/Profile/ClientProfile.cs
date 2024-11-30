@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Models.Profile
 {
-
 	[Serializable]
 	public class ClientProfile : IUserProfile
 	{

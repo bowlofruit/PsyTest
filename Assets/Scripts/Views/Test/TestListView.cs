@@ -7,67 +7,54 @@ using Zenject;
 public class TestListView : MonoBehaviour, ITestListView
 {
 	[Header("Test List")]
-	[SerializeField] private Canvas _testList;
+	[SerializeField] private Canvas _testListCanvas;
 	[SerializeField] private PsychologicalTestPrefab _testPrefab;
 	[SerializeField] private Transform _content;
 	[field: SerializeField] public Sprite TestSprite { get; set; }
 
 	[Header("Test Question")]
-	[SerializeField] private Canvas _testQustions;
+	[SerializeField] private Canvas _testQuestionsCanvas;
 	[SerializeField] private TMP_Text _questionText;
 	[SerializeField] private Button _submitButton;
-
-	private OptionsManager _optionsManager;
-	private ToggleGroup _toggleGroup;
-	private TestPresenter _presenter;
 
 	[field: SerializeField] public GameObject OptionsContainer { get; set; }
 	[field: SerializeField] public OptionPrefabView OptionPrefab { get; set; }
 
 	[Header("Test Result")]
-	[SerializeField] private Canvas _testResult;
-	[SerializeField] private TMP_Text _testScore;
-	[SerializeField] private TMP_Text _testResultDescription;
+	[SerializeField] private Canvas _testResultCanvas;
+	[SerializeField] private TMP_Text _testScoreText;
+	[SerializeField] private TMP_Text _testResultDescriptionText;
+
+	private OptionsManager _optionsManager;
+	private ToggleGroup _toggleGroup;
+	private TestPresenter _presenter;
 
 	[Inject]
 	public void Construct(OptionsManager optionsManager)
 	{
 		_optionsManager = optionsManager;
 		_submitButton.onClick.AddListener(OnSubmit);
-		ShowTestList(true);
+		ShowCanvas(_testListCanvas);
 	}
 
-	public void InitPresenter(TestPresenter testPresenter)
+	public void InitPresenter(TestPresenter presenter)
 	{
-		_presenter = testPresenter;
-		ShowTestList();
+		_presenter = presenter;
+		PopulateTestList();
 	}
 
-	private void ShowTestList(bool isTestList)
+	private void PopulateTestList()
 	{
-		_testList.gameObject.SetActive(isTestList);
-		_testQustions.gameObject.SetActive(!isTestList);
-		_testResult.gameObject.SetActive(!isTestList);
-	}
-
-	private void ShowTestList()
-	{
-		foreach (Test item in _presenter.TestContainer)
+		foreach (var test in _presenter.TestContainer)
 		{
-			PsychologicalTestPrefab testInList = Instantiate(_testPrefab, _content);
-			testInList.Init(item.Name, item.Description, item.Logo, item.Container, _presenter);
+			var testPrefabInstance = Instantiate(_testPrefab, _content);
+			testPrefabInstance.Init(test.Name, test.Description, test.Logo, test.Container, _presenter);
 		}
 	}
 
 	public void DisplayQuestion(TestQuestion question)
 	{
-		if (!_testQustions.gameObject.activeSelf)
-		{
-			_testList.gameObject.SetActive(false);
-			_testQustions.gameObject.SetActive(true);
-			_testResult.gameObject.SetActive(false);
-		}
-
+		ShowCanvas(_testQuestionsCanvas);
 		_questionText.text = question.QuestionText;
 		_toggleGroup = _optionsManager.CreateOptions(question);
 		_submitButton.interactable = true;
@@ -75,10 +62,11 @@ public class TestListView : MonoBehaviour, ITestListView
 
 	private void OnSubmit()
 	{
-		Toggle selectedToggle = _toggleGroup.ActiveToggles().FirstOrDefault();
+		var selectedToggle = _toggleGroup.ActiveToggles().FirstOrDefault();
 		if (selectedToggle != null)
 		{
-			_presenter.SubmitAnswer(selectedToggle.GetComponentInChildren<TMP_Text>().text);
+			var selectedOption = selectedToggle.GetComponentInChildren<TMP_Text>().text;
+			_presenter.SubmitAnswer(selectedOption);
 		}
 		else
 		{
@@ -88,21 +76,19 @@ public class TestListView : MonoBehaviour, ITestListView
 
 	public void ShowResult(TestResult result)
 	{
-		_testList.gameObject.SetActive(false);
-		_testQustions.gameObject.SetActive(false);
-		_testResult.gameObject.SetActive(true);
-
-		_testScore.text = result.TotalScore.ToString();
-		_testResultDescription.text = result.ResultLabel;
+		ShowCanvas(_testResultCanvas);
+		_testScoreText.text = result.TotalScore.ToString();
+		_testResultDescriptionText.text = result.ResultLabel;
 	}
 
-	public void Activate()
+	private void ShowCanvas(Canvas targetCanvas)
 	{
-		gameObject.SetActive(true);
+		_testListCanvas.gameObject.SetActive(targetCanvas == _testListCanvas);
+		_testQuestionsCanvas.gameObject.SetActive(targetCanvas == _testQuestionsCanvas);
+		_testResultCanvas.gameObject.SetActive(targetCanvas == _testResultCanvas);
 	}
 
-	public void Deactivate()
-	{
-		gameObject.SetActive(true);
-	}
+	public void Activate() => gameObject.SetActive(true);
+
+	public void Deactivate() => gameObject.SetActive(false);
 }

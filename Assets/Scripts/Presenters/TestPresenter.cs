@@ -6,7 +6,6 @@ public class TestPresenter
 	private readonly UserTest _userTest;
 	private int _currentQuestionIndex;
 	private TestContainer _currentTest;
-
 	public List<Test> TestContainer { get; }
 
 	public TestPresenter(ITestListView view, List<Test> testContainer, UserTest userTest)

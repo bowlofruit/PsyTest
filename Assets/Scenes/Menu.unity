@@ -3474,18 +3474,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb95ea21bb2f78b4f8f32c7814901b09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _testList: {fileID: 386289063}
+  _testListCanvas: {fileID: 386289063}
   _testPrefab: {fileID: 8269270742192755058, guid: 79663a7748001dc47951ddc90e135ac1, type: 3}
   _content: {fileID: 257164866}
   <TestSprite>k__BackingField: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  _testQustions: {fileID: 1742723245}
+  _testQuestionsCanvas: {fileID: 1118144339}
   _questionText: {fileID: 1871852822}
   _submitButton: {fileID: 1649748945}
   <OptionsContainer>k__BackingField: {fileID: 287248286}
   <OptionPrefab>k__BackingField: {fileID: 4349873245498794783, guid: 430000a913e85ee498de98b05ebeb90e, type: 3}
-  _testResult: {fileID: 1118144339}
-  _testScore: {fileID: 2375350}
-  _testResultDescription: {fileID: 1371006762}
+  _testResultCanvas: {fileID: 1118144339}
+  _testScoreText: {fileID: 2375350}
+  _testResultDescriptionText: {fileID: 1371006762}
 --- !u!4 &912793066
 Transform:
   m_ObjectHideFlags: 0
@@ -4187,7 +4187,7 @@ MonoBehaviour:
   _monoInstallers:
   - {fileID: 648405296}
   - {fileID: 371303365}
-  - {fileID: 879456659}
+  - {fileID: 41246726}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -6679,6 +6679,6 @@ SceneRoots:
   - {fileID: 1204717192}
   - {fileID: 648405297}
   - {fileID: 371303364}
-  - {fileID: 879456658}
   - {fileID: 41246728}
+  - {fileID: 879456658}
   - {fileID: 1624586518}
