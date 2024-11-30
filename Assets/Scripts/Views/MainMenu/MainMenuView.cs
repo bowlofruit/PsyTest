@@ -1,20 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
-public class MainMenuView : MonoBehaviour
+namespace View.MainMenu
 {
-	[SerializeField] private Button _testListButton;
-	[SerializeField] private Button _profileButton;
-
-	private AppStateMachine _stateMachine;
-
-	[Inject]
-	public void Construct(AppStateMachine stateMachine)
+	public class MainMenuView : MonoBehaviour, IStateHandler, IMainMenuView
 	{
-		_stateMachine = stateMachine;
+		[SerializeField] private Button _testListButton;
+		[SerializeField] private Button _profileButton;
 
-		_testListButton.onClick.AddListener(() => _stateMachine.SetState(AppState.TestList));
-		_profileButton.onClick.AddListener(() => _stateMachine.SetState(AppState.Profile));
+		public void Init(StateMachine stateMachine)
+		{
+			_testListButton.onClick.AddListener(() => stateMachine.SetState(AppStateEnum.TestList));
+			_profileButton.onClick.AddListener(() => stateMachine.SetState(AppStateEnum.Profile));
+		}
+
+		public void Activate() => gameObject.SetActive(true);
+
+		public void Deactivate() => gameObject.SetActive(false);
 	}
 }

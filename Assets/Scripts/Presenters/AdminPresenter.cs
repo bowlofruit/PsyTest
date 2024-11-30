@@ -21,10 +21,3 @@ public class AdminPresenter
 		_view.ShowSuccess("Request rejected.");
 	}
 }
-
-public interface IAdminView
-{
-	void ShowSuccess(string message);
-
-	void ShowError(string message);
-}

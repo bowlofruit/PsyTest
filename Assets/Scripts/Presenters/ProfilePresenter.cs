@@ -1,5 +1,4 @@
 using Models.Profile;
-using TMPro;
 using View.Profile;
 
 namespace Presenter.Profile
@@ -15,7 +14,7 @@ namespace Presenter.Profile
 			_currentUser = currentUser;
 		}
 
-		public void ShowClientProfile(ClientProfile client)
+		public void ShowProfile(ClientProfile client)
 		{
 			string testResults = string.Join("\n", client.TestResults.ConvertAll(
 				result => $"{result.TestId}: {result.ResultLabel} (Score: {result.TotalScore})"));

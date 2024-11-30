@@ -5,12 +5,13 @@ using Zenject;
 using View.Profile;
 using Presenter.Profile;
 using Models.Profile;
-
-public class AppStateMachineInstaller : MonoInstaller
+using View.MainMenu;
+public class AppInstaller : MonoInstaller
 {
 	[SerializeField] private AuthView _authView;
 	[SerializeField] private MainMenuView _mainMenuView;
 	[SerializeField] private TestListView _testListView;
+
 	[SerializeField] private ClientProfileView _clientProfileView;
 	[SerializeField] private TherapistProfileView _therapistProfileView;
 
@@ -18,49 +19,60 @@ public class AppStateMachineInstaller : MonoInstaller
 	{
 		BindFirebaseServices();
 		BindViews();
-		BindEventManager();
-		BindOptionsManager();
-		BindUserTestData();
-		BindPresenters();
 		BindStateMachine();
+		BindEventStateManager();
+		BindTestOptionsManager();
+		BindPresenters();
 	}
 
 	private void BindFirebaseServices()
 	{
-		Container.Bind<FirebaseAuthService>().AsSingle().NonLazy();
-		Container.Bind<FirebaseDatabaseService>().AsSingle().NonLazy();
+		Container.Bind<FirebaseDatabaseService>().FromInstance(new FirebaseDatabaseService()).AsSingle().NonLazy();
+		Container.Bind<FirebaseAuthService>().FromInstance(new FirebaseAuthService()).AsSingle().NonLazy();
 	}
 
 	private void BindViews()
 	{
 		Container.Bind<IAuthView>().To<AuthView>().FromInstance(_authView).AsSingle();
-		Container.Bind<MainMenuView>().FromInstance(_mainMenuView).AsSingle();
+		Container.Bind<IMainMenuView>().To<MainMenuView>().FromInstance(_mainMenuView).AsSingle();
 		Container.Bind<ITestListView>().To<TestListView>().FromInstance(_testListView).AsSingle();
 
-		Container.Bind<IProfileView<ClientProfile>>().WithId("Client").To<ClientProfileView>().AsTransient();
-		Container.Bind<IProfileView<TherapistProfile>>().WithId("Therapist").To<TherapistProfileView>().AsTransient();
+		Container.Bind<IProfileView<ClientProfile>>().WithId("Client").To<ClientProfileView>().FromInstance(_clientProfileView).AsTransient();
+		Container.Bind<IProfileView<TherapistProfile>>().WithId("Therapist").To<TherapistProfileView>().FromInstance(_therapistProfileView).AsTransient();
 
 		Container.Bind<ProfileViewFactory>().AsSingle();
 	}
 
 	private void BindStateMachine()
 	{
-		Container.Bind<AppStateMachine>().AsSingle();
+		Container.Bind<StateMachine>().AsSingle().WithArguments(
+			new Dictionary<AppStateEnum, IStateHandler>
+			{
+				{ AppStateEnum.AuthScreen, Container.Resolve<IAuthView>() },
+				{ AppStateEnum.MainMenu, Container.Resolve<IMainMenuView>() },
+				{ AppStateEnum.TestList, Container.Resolve<ITestListView>() },
+				{ AppStateEnum.Profile, Container.Resolve<IProfileView<IUserProfile>>() }
+			}
+		).OnInstantiated<StateMachine>((ctx, stateMachine) =>
+		{
+			var mainMenuView = ctx.Container.Resolve<MainMenuView>();
+			mainMenuView.Init(stateMachine);
+		});
 	}
 
-	private void BindEventManager()
+	private void BindEventStateManager()
 	{
-		Container.Bind<EventManager>().AsSingle();
+		Container.Bind<EventStateManager>().FromInstance(new EventStateManager()).AsSingle();
 	}
 
-	private void BindOptionsManager()
+	private void BindTestOptionsManager()
 	{
 		Container.Bind<OptionsManager>()
 			.FromInstance(new OptionsManager(_testListView.OptionsContainer.transform, _testListView.OptionPrefab))
 			.AsSingle();
 	}
 
-	private void BindUserTestData()
+	private void BindTestPresenter()
 	{
 		UserTest userTest = CreateUserTest();
 		List<Test> testList = CreateTestList();
@@ -69,9 +81,50 @@ public class AppStateMachineInstaller : MonoInstaller
 
 	private void BindPresenters()
 	{
-		Container.Bind<AuthPresenter>().AsTransient();
-		Container.Bind<ProfilePresenter>().AsTransient();
+		BindTestPresenter();
+		BindProfilePresenter();
+		Container.Bind<AuthPresenter>()
+			.FromInstance(new AuthPresenter(
+				Container.Resolve<FirebaseAuthService>(),
+				Container.Resolve<IAuthView>(),
+				Container.Resolve<EventStateManager>()))
+			.AsTransient();
 	}
+
+	private void BindProfilePresenter()
+	{
+		bool isClient = true;
+
+		if (isClient)
+		{
+			Container.Bind<IUserProfile>().To<ClientProfile>().AsTransient();
+			Container.Bind<ProfilePresenter>()
+				.AsTransient()
+				.WithArguments(
+					Container.ResolveId<IProfileView<ClientProfile>>("Client"),
+					Container.Resolve<ClientProfile>()
+				);
+		}
+		else
+		{
+			Container.Bind<IUserProfile>().To<TherapistProfile>().AsTransient();
+			Container.Bind<ProfilePresenter>()
+				.AsTransient()
+				.WithArguments(
+					Container.ResolveId<IProfileView<TherapistProfile>>("Therapist"),
+					Container.Resolve<TherapistProfile>()
+				);
+		}
+
+		Container.Bind<ProfilePresenter>()
+			.ToSelf()
+			.AsTransient()
+			.WithArguments(
+				Container.Resolve<IProfileView<IUserProfile>>(),
+				Container.Resolve<IUserProfile>()
+			);
+	}
+
 
 	private UserTest CreateUserTest()
 	{

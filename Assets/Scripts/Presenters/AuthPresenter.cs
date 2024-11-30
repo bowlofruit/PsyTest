@@ -1,12 +1,13 @@
 using System;
+using UnityEngine;
 
 public class AuthPresenter
 {
 	private readonly FirebaseAuthService _authService;
-	private readonly AuthView _authView;
-	private readonly EventManager _eventManager;
+	private readonly IAuthView _authView;
+	private readonly EventStateManager _eventManager;
 
-	public AuthPresenter(FirebaseAuthService authService, AuthView authView, EventManager eventManager)
+	public AuthPresenter(FirebaseAuthService authService, IAuthView authView, EventStateManager eventManager)
 	{
 		_authService = authService;
 		_authView = authView;
@@ -22,7 +23,7 @@ public class AuthPresenter
 			if (_authService.IsEmailVerified())
 			{
 				_authView.ShowSuccess("Login successful");
-				_eventManager.Notify(AppState.MainMenu);
+				_eventManager.Notify(AppStateEnum.MainMenu);
 			}
 			else
 			{
@@ -32,7 +33,7 @@ public class AuthPresenter
 		catch (Exception ex)
 		{
 			_authView.ShowError($"Login failed: {ex.Message}");
-			UnityEngine.Debug.Log(ex);
+			Debug.Log(ex);
 		}
 	}
 

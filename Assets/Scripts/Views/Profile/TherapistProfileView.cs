@@ -19,9 +19,8 @@ namespace View.Profile
 			_certificatesText.text = $"Certificates: {string.Join(", ", profile.Certificates)}";
 		}
 
-		public GameObject GetGameObject()
-		{
-			return gameObject;
-		}
+		public void Activate() => gameObject.SetActive(true);
+
+		public void Deactivate() => gameObject.SetActive(false);
 	}
 }

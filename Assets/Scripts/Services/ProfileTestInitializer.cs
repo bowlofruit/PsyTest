@@ -14,7 +14,6 @@ public class ProfileTestInitializer : IInitializable
 
 	public void Initialize()
 	{
-		// Створюємо тестові профілі
 		ClientProfile client = new()
 		{
 			Name = "Olga",
@@ -26,18 +25,6 @@ public class ProfileTestInitializer : IInitializable
 			}
 		};
 
-		TherapistProfile therapist = new()
-		{
-			Name = "Ivan",
-			ContactInfo = "ivan.petrov@gmail.com",
-			ExperienceYears = 10,
-			Certificates = new List<string> { "CBT Certification", "EMDR Training" }
-		};
-
-		// Відображення профілю клієнта
-		_profilePresenter.ShowClientProfile(client);
-
-		// Альтернативно: Відображення профілю терапевта
-		// _profilePresenter.ShowTherapistProfile(therapist);
+		_profilePresenter.ShowProfile(client);
 	}
 }

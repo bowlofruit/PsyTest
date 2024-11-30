@@ -17,9 +17,8 @@ namespace View.Profile
 			_notesText.text = $"Notes: {profile.Notes}";
 		}
 
-		public GameObject GetGameObject()
-		{
-			return gameObject;
-		}
+		public void Activate() => gameObject.SetActive(true);
+
+		public void Deactivate() => gameObject.SetActive(false);
 	}
 }

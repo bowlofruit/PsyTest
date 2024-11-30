@@ -1,4 +1,4 @@
-﻿public enum AppState
+﻿public enum AppStateEnum
 {
 	AuthScreen,
 	MainMenu,

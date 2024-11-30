@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 public class AuthView : MonoBehaviour, IAuthView
 {
@@ -12,17 +11,12 @@ public class AuthView : MonoBehaviour, IAuthView
 	[SerializeField] private Button _loginButton;
 	[SerializeField] private TMP_Text _messageLabel;
 
-	private AuthPresenter _presenter;
-
-	[Inject]
-	public void Construct(AuthPresenter presenter)
+	public void Init(AuthPresenter authPresenter)
 	{
-		_presenter = presenter;
-
 		_registerButton.onClick.AddListener(() =>
-			_presenter.OnRegister(_emailField.text, _passwordField.text, _usernameField.text));
+			authPresenter.OnRegister(_emailField.text, _passwordField.text, _usernameField.text));
 		_loginButton.onClick.AddListener(() =>
-			_presenter.OnLogin(_emailField.text, _passwordField.text));
+			authPresenter.OnLogin(_emailField.text, _passwordField.text));
 	}
 
 	public void ShowSuccess(string message)
@@ -37,8 +31,7 @@ public class AuthView : MonoBehaviour, IAuthView
 		_messageLabel.color = Color.red;
 	}
 
-	public GameObject GetGameObject()
-	{
-		return gameObject;
-	}
+	public void Activate() => gameObject.SetActive(true);
+
+	public void Deactivate() => gameObject.SetActive(false);
 }

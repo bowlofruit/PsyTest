@@ -89,4 +89,14 @@ public class TestListView : MonoBehaviour, ITestListView
 		_testScore.text = result.TotalScore.ToString();
 		_testResultDescription.text = result.ResultLabel;
 	}
+
+	public void Activate()
+	{
+		gameObject.SetActive(true);
+	}
+
+	public void Deactivate()
+	{
+		gameObject.SetActive(true);
+	}
 }
