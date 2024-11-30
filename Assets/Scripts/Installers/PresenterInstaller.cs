@@ -3,22 +3,24 @@ using System;
 using View.Profile;
 using Presenter.Profile;
 using Models.Profile;
+using Zenject;
 
 namespace Installers
 {
-	using Zenject;
-
 	public class PresenterInstaller : MonoInstaller
 	{
 		public override void InstallBindings()
 		{
+			var authContainer = Container.Resolve<IAuthView>();
+
 			Container.Bind<AuthPresenter>()
 				.FromInstance(new AuthPresenter(
 					Container.Resolve<FirebaseAuthService>(),
-					Container.Resolve<IAuthView>(),
+					authContainer,
 					Container.Resolve<EventStateManager>()
 				))
-				.AsTransient();
+				.AsTransient()
+				.OnInstantiated<AuthPresenter>((context, presenter) => authContainer.InitPresenter(presenter));
 
 			BindProfilePresenter();
 			BindTestPresenter();
@@ -54,7 +56,11 @@ namespace Installers
 		{
 			UserTest userTest = CreateUserTest();
 			List<Test> testList = CreateTestList();
-			Container.Bind<TestPresenter>().AsTransient().WithArguments(Container.Resolve<ITestListView>(), testList, userTest);
+			ITestListView testListView = Container.Resolve<ITestListView>();
+			Container.Bind<TestPresenter>()
+				.AsTransient()
+				.WithArguments(Container.Resolve<ITestListView>(), testList, userTest)
+				.OnInstantiated<TestPresenter>((context, presenter) => testListView.InitPresenter(presenter)); ;
 		}
 
 		private UserTest CreateUserTest()
@@ -72,11 +78,11 @@ namespace Installers
 		private List<Test> CreateTestList()
 		{
 			return new List<Test>
-			{
-				CreateTest("1", "Тест на депресію Бека", "Психологічні", "https://example.com/test_depression.json", "Тест для оцінки рівня депресії за методикою Бека."),
-				CreateTest("2", "Тест на тривожність", "Психологічні", "https://example.com/test_anxiety.json", "Тест для оцінки рівня тривожності."),
-				CreateTest("3", "Тест на самооцінку", "Психологічні", "https://example.com/test_selfesteem.json", "Тест для визначення рівня самооцінки.")
-			};
+		{
+			CreateTest("1", "Тест на депресію Бека", "Психологічні", "https://example.com/test_depression.json", "Тест для оцінки рівня депресії за методикою Бека."),
+			CreateTest("2", "Тест на тривожність", "Психологічні", "https://example.com/test_anxiety.json", "Тест для оцінки рівня тривожності."),
+			CreateTest("3", "Тест на самооцінку", "Психологічні", "https://example.com/test_selfesteem.json", "Тест для визначення рівня самооцінки.")
+		};
 		}
 
 		private Test CreateTest(string id, string name, string category, string jsonUrl, string description)

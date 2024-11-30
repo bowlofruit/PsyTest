@@ -17,9 +17,9 @@ public class TestListView : MonoBehaviour, ITestListView
 	[SerializeField] private TMP_Text _questionText;
 	[SerializeField] private Button _submitButton;
 
-	private TestPresenter _presenter;
 	private OptionsManager _optionsManager;
 	private ToggleGroup _toggleGroup;
+	private TestPresenter _presenter;
 
 	[field: SerializeField] public GameObject OptionsContainer { get; set; }
 	[field: SerializeField] public OptionPrefabView OptionPrefab { get; set; }
@@ -30,18 +30,24 @@ public class TestListView : MonoBehaviour, ITestListView
 	[SerializeField] private TMP_Text _testResultDescription;
 
 	[Inject]
-	public void Construct(TestPresenter presenter, OptionsManager optionsManager)
+	public void Construct(OptionsManager optionsManager)
 	{
-		_presenter = presenter;
 		_optionsManager = optionsManager;
-
 		_submitButton.onClick.AddListener(OnSubmit);
+		ShowTestList(true);
+	}
 
-		_testList.gameObject.SetActive(true);
-		_testQustions.gameObject.SetActive(false);
-		_testResult.gameObject.SetActive(false);
-
+	public void InitPresenter(TestPresenter testPresenter)
+	{
+		_presenter = testPresenter;
 		ShowTestList();
+	}
+
+	private void ShowTestList(bool isTestList)
+	{
+		_testList.gameObject.SetActive(isTestList);
+		_testQustions.gameObject.SetActive(!isTestList);
+		_testResult.gameObject.SetActive(!isTestList);
 	}
 
 	private void ShowTestList()

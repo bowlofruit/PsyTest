@@ -10,8 +10,15 @@ public class AuthView : MonoBehaviour, IAuthView
 	[SerializeField] private Button _registerButton;
 	[SerializeField] private Button _loginButton;
 	[SerializeField] private TMP_Text _messageLabel;
+	private AuthPresenter _presenter;
 
-	public void Init(AuthPresenter authPresenter)
+	public void InitPresenter(AuthPresenter authPresenter)
+	{
+		_presenter = authPresenter;
+		SumscribesButton(authPresenter);
+	}
+
+	private void SumscribesButton(AuthPresenter authPresenter)
 	{
 		_registerButton.onClick.AddListener(() =>
 			authPresenter.OnRegister(_emailField.text, _passwordField.text, _usernameField.text));
