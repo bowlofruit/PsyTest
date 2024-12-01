@@ -1,94 +1,52 @@
-﻿using System.Linq;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using Zenject;
+using System.Linq;
+using Presenter.PsyTest;
 
-public class TestListView : MonoBehaviour, ITestListView
+namespace View.PsyTest
 {
-	[Header("Test List")]
-	[SerializeField] private Canvas _testListCanvas;
-	[SerializeField] private PsychologicalTestPrefab _testPrefab;
-	[SerializeField] private Transform _content;
-	[field: SerializeField] public Sprite TestSprite { get; set; }
-
-	[Header("Test Question")]
-	[SerializeField] private Canvas _testQuestionsCanvas;
-	[SerializeField] private TMP_Text _questionText;
-	[SerializeField] private Button _submitButton;
-
-	[field: SerializeField] public GameObject OptionsContainer { get; set; }
-	[field: SerializeField] public OptionPrefabView OptionPrefab { get; set; }
-
-	[Header("Test Result")]
-	[SerializeField] private Canvas _testResultCanvas;
-	[SerializeField] private TMP_Text _testScoreText;
-	[SerializeField] private TMP_Text _testResultDescriptionText;
-
-	private OptionsManager _optionsManager;
-	private ToggleGroup _toggleGroup;
-	private TestPresenter _presenter;
-
-	[Inject]
-	public void Construct(OptionsManager optionsManager)
+	public class TestListView : MonoBehaviour, ITestListView
 	{
-		_optionsManager = optionsManager;
-		_submitButton.onClick.AddListener(OnSubmit);
-		ShowCanvas(_testListCanvas);
-	}
+		[Header("UI Components")]
+		[SerializeField] private Canvas _testListCanvas;
+		[SerializeField] private PsyTestListPrefab _testPrefab;
+		[SerializeField] private Transform _content;
 
-	public void InitPresenter(TestPresenter presenter)
-	{
-		_presenter = presenter;
-		PopulateTestList();
-	}
+		private TestPresenter _presenter;
 
-	private void PopulateTestList()
-	{
-		foreach (var test in _presenter.TestContainer)
+		[Inject]
+		public void Construct(TestPresenter presenter)
 		{
-			var testPrefabInstance = Instantiate(_testPrefab, _content);
-			testPrefabInstance.Init(test.Name, test.Description, test.Logo, test.Container, _presenter);
+			_presenter = presenter;
 		}
-	}
 
-	public void DisplayQuestion(TestQuestion question)
-	{
-		ShowCanvas(_testQuestionsCanvas);
-		_questionText.text = question.QuestionText;
-		_toggleGroup = _optionsManager.CreateOptions(question);
-		_submitButton.interactable = true;
-	}
-
-	private void OnSubmit()
-	{
-		var selectedToggle = _toggleGroup.ActiveToggles().FirstOrDefault();
-		if (selectedToggle != null)
+		private void OnEnable()
 		{
-			var selectedOption = selectedToggle.GetComponentInChildren<TMP_Text>().text;
-			_presenter.SubmitAnswer(selectedOption);
+			if (_presenter == null)
+			{
+				Debug.LogError("Presenter is not initialized yet.");
+				return;
+			}
+
+			PopulateTestList();
 		}
-		else
+
+		private void PopulateTestList()
 		{
-			Debug.LogWarning("No option selected.");
+			if (_presenter.TestContainer == null || !_presenter.TestContainer.Any())
+			{
+				Debug.LogWarning("Test list is empty.");
+				return;
+			}
+
+			foreach (var test in _presenter.TestContainer)
+			{
+				var instance = Instantiate(_testPrefab, _content);
+				instance.Init(test.Name, test.Description, test.Logo, test.Container);
+			}
 		}
+
+		public void Activate() => gameObject.SetActive(true);
+		public void Deactivate() => gameObject.SetActive(false);
 	}
-
-	public void ShowResult(TestResult result)
-	{
-		ShowCanvas(_testResultCanvas);
-		_testScoreText.text = result.TotalScore.ToString();
-		_testResultDescriptionText.text = result.ResultLabel;
-	}
-
-	private void ShowCanvas(Canvas targetCanvas)
-	{
-		_testListCanvas.gameObject.SetActive(targetCanvas == _testListCanvas);
-		_testQuestionsCanvas.gameObject.SetActive(targetCanvas == _testQuestionsCanvas);
-		_testResultCanvas.gameObject.SetActive(targetCanvas == _testResultCanvas);
-	}
-
-	public void Activate() => gameObject.SetActive(true);
-
-	public void Deactivate() => gameObject.SetActive(false);
 }

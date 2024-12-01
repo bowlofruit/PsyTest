@@ -1,8 +1,9 @@
 using System;
+using UnityEngine;
 
 public class EventStateManager
 {
-	public Action<AppStateEnum> OnStateChangeRequested;
+	private event Action<AppStateEnum> OnStateChangeRequested;
 
 	public void Subscribe(Action<AppStateEnum> callback)
 	{

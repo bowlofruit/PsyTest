@@ -13,19 +13,16 @@ public class StateMachine
 		_eventStateManager = eventStateManager;
 
 		_eventStateManager.Subscribe(SetState);
+		_eventStateManager.Notify(AppStateEnum.AuthScreen);
 	}
 
 	public void SetState(AppStateEnum newState)
 	{
 		if (_currentState != newState)
 		{
-			if (_stateHandlers.TryGetValue(_currentState, out var currentStateHandler))
+			foreach (var stateHandler in _stateHandlers.Values)
 			{
-				currentStateHandler?.Deactivate();
-			}
-			else
-			{
-				Debug.LogWarning($"State {_currentState} not found in handlers.");
+				stateHandler?.Deactivate();
 			}
 
 			_currentState = newState;

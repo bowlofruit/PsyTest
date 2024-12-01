@@ -24,7 +24,5 @@ public class ProfileTestInitializer : IInitializable
 				new TestResult { TestId = "T002", ResultLabel = "Moderate Anxiety", TotalScore = 8 }
 			}
 		};
-
-		_profilePresenter.ShowProfile(client);
 	}
 }

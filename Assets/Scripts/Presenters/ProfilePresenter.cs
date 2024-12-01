@@ -8,18 +8,15 @@ namespace Presenter.Profile
 		private readonly IProfileView<IUserProfile> _view;
 		private readonly IUserProfile _currentUser;
 
-		public ProfilePresenter(IProfileView<IUserProfile> view, IUserProfile currentUser)
+		public ProfilePresenter(ProfileViewFactory viewFactory, IUserProfile currentUser, string role)
 		{
-			_view = view;
+			_view = viewFactory.ResolveView(role);
 			_currentUser = currentUser;
 		}
 
-		public void ShowProfile(ClientProfile client)
+		public void ShowProfile()
 		{
-			string testResults = string.Join("\n", client.TestResults.ConvertAll(
-				result => $"{result.TestId}: {result.ResultLabel} (Score: {result.TotalScore})"));
-
-			_view.DisplayProfile(_currentUser);
+			_view.DisplayProfile(_currentUser); // Display the profile
 		}
 	}
 }

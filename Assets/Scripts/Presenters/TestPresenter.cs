@@ -1,89 +1,46 @@
 ﻿using System.Collections.Generic;
+using View.PsyTest;
 
-public class TestPresenter
+namespace Presenter.PsyTest
 {
-	private readonly ITestListView _view;
-	private readonly UserTest _userTest;
-	private int _currentQuestionIndex;
-	private TestContainer _currentTest;
-	public List<Test> TestContainer { get; }
-
-	public TestPresenter(ITestListView view, List<Test> testContainer, UserTest userTest)
+	public class TestPresenter
 	{
-		_view = view;
-		TestContainer = testContainer;
-		_userTest = userTest;
-		_currentQuestionIndex = 0;
-	}
+		public List<Test> TestContainer { get; private set; }
 
-	public void StartTest(TestContainer container)
-	{
-		_currentTest = container;
-		LoadNextQuestion();
-	}
+		private readonly TestQuestionsView _testQuestionsView;
+		private readonly TestResultView _testResultView;
+		private readonly TestSelectionMediator _selectionMediator;
 
-	private void LoadNextQuestion()
-	{
-		if (_currentQuestionIndex < _currentTest.Questions.Count)
+		public TestPresenter(
+			TestQuestionsView testQuestionsView,
+			TestResultView testResultView,
+			TestSelectionMediator testSelectionMediator)
 		{
-			_view.DisplayQuestion(_currentTest.Questions[_currentQuestionIndex]);
+			_testQuestionsView = testQuestionsView;
+			_testResultView = testResultView;
+
+			_selectionMediator = testSelectionMediator;
+			_selectionMediator.OnTestSelected += StartTest;
 		}
-		else
+
+		public void StartTest(TestContainer selectedTest)
 		{
-			ShowResults();
+			
 		}
-	}
 
-	public void SubmitAnswer(string selectedOptionText)
-	{
-		TestQuestion currentQuestion = _currentTest.Questions[_currentQuestionIndex];
-
-		int selectedScore = GetScoreForSelectedOption(currentQuestion, selectedOptionText);
-		_userTest.CurrentScore += selectedScore;
-
-		_currentQuestionIndex++;
-		LoadNextQuestion();
-	}
-
-	private int GetScoreForSelectedOption(TestQuestion question, string selectedOptionText)
-	{
-		foreach (TestOption option in question.Options)
+		public void DisplayQuestion(TestQuestion question)
 		{
-			if (option.Text == selectedOptionText)
-			{
-				return option.Score;
-			}
+			_testQuestionsView.DisplayQuestion(question);
 		}
-		return 0;
-	}
 
-	private void ShowResults()
-	{
-		TestResult result = CalculateTestResult();
-		_view.ShowResult(result);
-	}
-
-	private TestResult CalculateTestResult()
-	{
-		TestResult result = new()
+		public void SubmitAnswer(string selectedOption)
 		{
-			TestId = _userTest.TestId,
-			TotalScore = _userTest.CurrentScore,
-			ResultLabel = GetResultLabel(_userTest.CurrentScore)
-		};
 
-		return result;
-	}
-
-	private string GetResultLabel(int score)
-	{
-		foreach (TestScoring scoring in _currentTest.Scoring)
-		{
-			if (score >= scoring.MinScore && score <= scoring.MaxScore)
-			{
-				return scoring.Label;
-			}
 		}
-		return "Unknown";
+
+		public void ShowResult(TestResult result)
+		{
+			_testResultView.ShowResult(result);
+		}
 	}
 }
