@@ -16,7 +16,7 @@ namespace Presenter.Profile
 
 		public void ShowProfile()
 		{
-			_view.DisplayProfile(_currentUser); // Display the profile
+			_view.DisplayProfile(_currentUser);
 		}
 	}
 }

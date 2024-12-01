@@ -2,6 +2,7 @@
 using Zenject;
 using System.Linq;
 using Presenter.PsyTest;
+using System.Collections.Generic;
 
 namespace View.PsyTest
 {
@@ -13,11 +14,11 @@ namespace View.PsyTest
 		[SerializeField] private Transform _content;
 
 		private TestPresenter _presenter;
+		private List<PsyTestListPrefab> _testPrefabs = new List<PsyTestListPrefab>();
 
-		[Inject]
-		public void Construct(TestPresenter presenter)
+		public void InitPresenter(TestPresenter testPresenter)
 		{
-			_presenter = presenter;
+			_presenter = testPresenter;
 		}
 
 		private void OnEnable()
@@ -39,10 +40,31 @@ namespace View.PsyTest
 				return;
 			}
 
-			foreach (var test in _presenter.TestContainer)
+			int testCount = _presenter.TestContainer.Count;
+
+			if (_testPrefabs.Count < testCount)
 			{
-				var instance = Instantiate(_testPrefab, _content);
-				instance.Init(test.Name, test.Description, test.Logo, test.Container);
+				for (int i = _testPrefabs.Count; i < testCount; i++)
+				{
+					var instance = Instantiate(_testPrefab, _content);
+					_testPrefabs.Add(instance);
+				}
+			}
+			else if (_testPrefabs.Count > testCount)
+			{
+				for (int i = _testPrefabs.Count - 1; i >= testCount; i--)
+				{
+					Destroy(_testPrefabs[i].gameObject);
+					_testPrefabs.RemoveAt(i);
+				}
+			}
+
+			for (int i = 0; i < testCount; i++)
+			{
+				var test = _presenter.TestContainer[i];
+				var testPrefab = _testPrefabs[i];
+
+				testPrefab.Init(test.Name, test.Description, test.Logo, test.Container);
 			}
 		}
 

@@ -10,12 +10,15 @@ namespace Installers
 	public class ViewBindingInstaller : MonoInstaller
 	{
 		[SerializeField] private AuthView _authView;
+
 		[SerializeField] private MainMenuView _mainMenuView;
+
 		[SerializeField] private TestListView _testListView;
-		[SerializeField] private ClientProfileView _clientProfileView;
-		[SerializeField] private TherapistProfileView _therapistProfileView;
 		[SerializeField] private TestQuestionsView _testQuestionsView;
 		[SerializeField] private TestResultView _testResultView;
+
+		[SerializeField] private ClientProfileView _clientProfileView;
+		[SerializeField] private TherapistProfileView _therapistProfileView;
 
 		public override void InstallBindings()
 		{
@@ -68,12 +71,6 @@ namespace Installers
 
 		private void BindTestListView()
 		{
-			Container.Bind<OptionsManager>()
-				.FromInstance(new OptionsManager(
-					_testQuestionsView.OptionsContainer.transform,
-					_testQuestionsView.OptionPrefab))
-				.AsSingle();
-
 			Container.Bind<ITestListView>()
 				.To<TestListView>()
 				.FromInstance(_testListView)
@@ -82,6 +79,12 @@ namespace Installers
 
 		private void BindTestQuestionsView()
 		{
+			Container.Bind<OptionsManager>()
+				.FromInstance(new OptionsManager(
+					_testQuestionsView.OptionsContainer.transform,
+					_testQuestionsView.OptionPrefab))
+				.AsSingle();
+
 			Container.Bind<TestQuestionsView>()
 				.FromInstance(_testQuestionsView)
 				.AsSingle();

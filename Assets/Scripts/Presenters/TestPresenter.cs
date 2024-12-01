@@ -12,10 +12,12 @@ namespace Presenter.PsyTest
 		private readonly TestSelectionMediator _selectionMediator;
 
 		public TestPresenter(
+			TestContainer testContainer,
 			TestQuestionsView testQuestionsView,
 			TestResultView testResultView,
 			TestSelectionMediator testSelectionMediator)
 		{
+			
 			_testQuestionsView = testQuestionsView;
 			_testResultView = testResultView;
 

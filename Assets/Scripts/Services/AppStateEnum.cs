@@ -4,5 +4,7 @@
 	AuthScreen,
 	MainMenu,
 	TestList,
+	TestQuestion,
+	TestResult,
 	Profile
 }
